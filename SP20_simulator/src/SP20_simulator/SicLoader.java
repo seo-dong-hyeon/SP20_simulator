@@ -1,25 +1,32 @@
 package SP20_simulator;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
- * SicLoader´Â ÇÁ·Î±×·¥À» ÇØ¼®ÇØ¼­ ¸Ş¸ğ¸®¿¡ ¿Ã¸®´Â ¿ªÇÒÀ» ¼öÇàÇÑ´Ù. ÀÌ °úÁ¤¿¡¼­ linkerÀÇ ¿ªÇÒ ¶ÇÇÑ ¼öÇàÇÑ´Ù. 
+ * SicLoaderëŠ” í”„ë¡œê·¸ë¨ì„ í•´ì„í•´ì„œ ë©”ëª¨ë¦¬ì— ì˜¬ë¦¬ëŠ” ì—­í• ì„ ìˆ˜í–‰í•œë‹¤. ì´ ê³¼ì •ì—ì„œ linkerì˜ ì—­í•  ë˜í•œ ìˆ˜í–‰í•œë‹¤. 
  * <br><br>
- * SicLoader°¡ ¼öÇàÇÏ´Â ÀÏÀ» ¿¹¸¦ µé¸é ´ÙÀ½°ú °°´Ù.<br>
- * - program code¸¦ ¸Ş¸ğ¸®¿¡ ÀûÀç½ÃÅ°±â<br>
- * - ÁÖ¾îÁø °ø°£¸¸Å­ ¸Ş¸ğ¸®¿¡ ºó °ø°£ ÇÒ´çÇÏ±â<br>
- * - °úÁ¤¿¡¼­ ¹ß»ıÇÏ´Â symbol, ÇÁ·Î±×·¥ ½ÃÀÛÁÖ¼Ò, control section µî ½ÇÇàÀ» À§ÇÑ Á¤º¸ »ı¼º ¹× °ü¸®
+ * SicLoaderê°€ ìˆ˜í–‰í•˜ëŠ” ì¼ì„ ì˜ˆë¥¼ ë“¤ë©´ ë‹¤ìŒê³¼ ê°™ë‹¤.<br>
+ * - program codeë¥¼ ë©”ëª¨ë¦¬ì— ì ì¬ì‹œí‚¤ê¸°<br>
+ * - ì£¼ì–´ì§„ ê³µê°„ë§Œí¼ ë©”ëª¨ë¦¬ì— ë¹ˆ ê³µê°„ í• ë‹¹í•˜ê¸°<br>
+ * - ê³¼ì •ì—ì„œ ë°œìƒí•˜ëŠ” symbol, í”„ë¡œê·¸ë¨ ì‹œì‘ì£¼ì†Œ, control section ë“± ì‹¤í–‰ì„ ìœ„í•œ ì •ë³´ ìƒì„± ë° ê´€ë¦¬
  */
 public class SicLoader {
 	ResourceManager rMgr;
+	int currentSection = 0;
+	int startADDR = 0;
 	
 	public SicLoader(ResourceManager resourceManager) {
-		// ÇÊ¿äÇÏ´Ù¸é ÃÊ±âÈ­
+		// í•„ìš”í•˜ë‹¤ë©´ ì´ˆê¸°í™”
+		resourceManager.initializeResource();
 		setResourceManager(resourceManager);
 	}
 
 	/**
-	 * Loader¿Í ÇÁ·Î±×·¥À» ÀûÀçÇÒ ¸Ş¸ğ¸®¸¦ ¿¬°á½ÃÅ²´Ù.
+	 * Loaderì™€ í”„ë¡œê·¸ë¨ì„ ì ì¬í•  ë©”ëª¨ë¦¬ë¥¼ ì—°ê²°ì‹œí‚¨ë‹¤.
 	 * @param rMgr
 	 */
 	public void setResourceManager(ResourceManager resourceManager) {
@@ -27,13 +34,70 @@ public class SicLoader {
 	}
 	
 	/**
-	 * object code¸¦ ÀĞ¾î¼­ load°úÁ¤À» ¼öÇàÇÑ´Ù. loadÇÑ µ¥ÀÌÅÍ´Â resourceManager°¡ °ü¸®ÇÏ´Â ¸Ş¸ğ¸®¿¡ ¿Ã¶ó°¡µµ·Ï ÇÑ´Ù.
-	 * load°úÁ¤¿¡¼­ ¸¸µé¾îÁø symbol table µî ÀÚ·á±¸Á¶ ¿ª½Ã resourceManager¿¡ Àü´ŞÇÑ´Ù.
-	 * @param objectCode ÀĞ¾îµéÀÎ ÆÄÀÏ
+	 * object codeë¥¼ ì½ì–´ì„œ loadê³¼ì •ì„ ìˆ˜í–‰í•œë‹¤. loadí•œ ë°ì´í„°ëŠ” resourceManagerê°€ ê´€ë¦¬í•˜ëŠ” ë©”ëª¨ë¦¬ì— ì˜¬ë¼ê°€ë„ë¡ í•œë‹¤.
+	 * loadê³¼ì •ì—ì„œ ë§Œë“¤ì–´ì§„ symbol table ë“± ìë£Œêµ¬ì¡° ì—­ì‹œ resourceManagerì— ì „ë‹¬í•œë‹¤.
+	 * @param objectCode ì½ì–´ë“¤ì¸ íŒŒì¼
 	 */
 	public void load(File objectCode){
+		try{
+            //ì…ë ¥ ìŠ¤íŠ¸ë¦¼ ìƒì„±
+            FileReader filereader = new FileReader(objectCode);
+            //ì…ë ¥ ë²„í¼ ìƒì„±
+            BufferedReader bufReader = new BufferedReader(filereader);
+            String line = "";
+            while((line = bufReader.readLine()) != null){
+            	if(!line.equals("")) {
+            		analyze(line);
+        		}
+            }
+
+            //.readLine()ì€ ëì— ê°œí–‰ë¬¸ìë¥¼ ì½ì§€ ì•ŠëŠ”ë‹¤.            
+            bufReader.close();
+        }catch (FileNotFoundException e) {
+            // TODO: handle exception
+        }catch(IOException e){
+            System.out.println(e);
+        }
 
 	};
+	
+	public void analyze(String line) {
+		switch(line.charAt(0)) {
+		case 'H' :
+			System.out.println(line);
+			//Hì™€ ê´€ë ¨ëœ ì •ë³´ë¥¼ Resource managerë¥¼ í†µí•´ì„œ ì €ì¥
+			//í•„ìš”í•œ ë³€ìˆ˜ì™€ í•¨ìˆ˜ëŠ” ììœ ë¡­ê²Œ ì„ ì–¸ ê°€ëŠ¥		
+			rMgr.setProgname(line.substring(1, 7));
+			rMgr.setProgLength(line.substring(13,19));
+			rMgr.setStartADDR(startADDR);
+
+			// SYMTAB ë“±ë¡
+			rMgr.symtabList.get(currentSection).
+			putSymbol(line.substring(1,7),Integer.parseInt(rMgr.getStartADDR(currentSection), 16));
+			
+			
+			//System.out.println(line.substring(1, 7) +" "+line.substring(13,19));
+			//System.out.println(line.substring(1,7) +" "+Integer.parseInt(rMgr.getStartADDR(currentSection), 16));
+			break;
+			
+		case 'T' :
+			int startLocctr = rMgr.symtabList.get(currentSection).locationList.get(0);      
+            int targetAddr = startLocctr + Integer.parseInt(line.substring(1,7),16);        
+            rMgr.setMemory(targetAddr*2, line.substring(9).toCharArray(),Integer.parseInt(line.substring(7,9), 16)*2);
+            
+            System.out.println("target :" +targetAddr*2);
+            System.out.println("line : "+line.substring(9).toCharArray());
+            System.out.println("??:" +Integer.parseInt(line.substring(7,9), 16)*2);
+            
+            break;
+
+			
+		case 'M' :
+		}
+
+	}
+	
+	
 	
 	
 

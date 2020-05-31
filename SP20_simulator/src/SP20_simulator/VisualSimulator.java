@@ -3,6 +3,8 @@ package SP20_simulator;
 import java.awt.EventQueue;
 import java.io.File;
 
+import SP20_simulator.Gui;
+
 /**
  * VisualSimulator는 사용자와의 상호작용을 담당한다.<br>
  * 즉, 버튼 클릭등의 이벤트를 전달하고 그에 따른 결과값을 화면에 업데이트 하는 역할을 수행한다.<br>
@@ -12,6 +14,7 @@ public class VisualSimulator {
 	ResourceManager resourceManager = new ResourceManager();
 	SicLoader sicLoader = new SicLoader(resourceManager);
 	SicSimulator sicSimulator = new SicSimulator(resourceManager);
+	Gui gui;
 	
 	/**
 	 * 프로그램 로드 명령을 전달한다.
@@ -19,7 +22,7 @@ public class VisualSimulator {
 	public void load(File program){
 		//...
 		sicLoader.load(program);
-		sicSimulator.load(program);
+		//sicSimulator.load(program);
 	};
 
 	/**
@@ -45,6 +48,9 @@ public class VisualSimulator {
 	
 
 	public static void main(String[] args) {
+		VisualSimulator vs = new VisualSimulator();
+		vs.gui = new Gui(vs);
+		vs.update();
 		
 	}
 }

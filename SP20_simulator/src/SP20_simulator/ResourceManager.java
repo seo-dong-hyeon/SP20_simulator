@@ -2,6 +2,7 @@ package SP20_simulator;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 
@@ -36,14 +37,28 @@ public class ResourceManager{
 	int[] register = new int[10];
 	double register_F;
 	
-	SymbolTable symtabList;
+	ArrayList<SymbolTable> symtabList;
 	// 이외에도 필요한 변수 선언해서 사용할 것.
 
+	ArrayList<String> progname;
+	ArrayList<String> startADDR;
+	ArrayList<String> progLength;
+	
 	/**
 	 * 메모리, 레지스터등 가상 리소스들을 초기화한다.
 	 */
 	public void initializeResource(){
-		
+		Arrays.fill(memory, '\0');
+        Arrays.fill(register, 0);
+        register_F = 0.0;
+        symtabList = new ArrayList<SymbolTable>();
+        symtabList.add(new SymbolTable());
+        symtabList.add(new SymbolTable());
+        symtabList.add(new SymbolTable());
+        
+        progname = new ArrayList<String>();
+        startADDR = new ArrayList<String>();
+        progLength = new ArrayList<String>();
 	}
 	
 	/**
@@ -102,6 +117,9 @@ public class ResourceManager{
 	 * @param num 저장하는 데이터의 개수
 	 */
 	public void setMemory(int locate, char[] data, int num){
+		for(int i = 0; i < num; i++){
+            memory[locate + i]  = data[i];
+        }
 
 	}
 
@@ -140,5 +158,26 @@ public class ResourceManager{
 	 */
 	public int byteToInt(byte[] data){
 		return 0;
+	}
+
+	public void setProgLength(String substring) {
+		// TODO Auto-generated method stub
+		progLength.add(substring);
+		
+	}
+
+	public void setStartADDR(int currentSection) {
+		// TODO Auto-generated method stub
+		startADDR.add(Integer.toString(currentSection));
+		
+	}
+
+	public String getStartADDR(int currentSection) {
+		return startADDR.get(currentSection);
+	}
+
+	public void setProgname(String substring) {
+		progname.add(substring);
+		
 	}
 }
