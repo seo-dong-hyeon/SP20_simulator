@@ -1,6 +1,12 @@
 package SP20_simulator;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import SP20_simulator.InstTable;
+import SP20_simulator.ResourceManager;
+import SP20_simulator.SicLoader;
 
 /**
  * 시뮬레이터로서의 작업을 담당한다. VisualSimulator에서 사용자의 요청을 받으면 이에 따라
@@ -17,10 +23,15 @@ import java.io.File;
  */
 public class SicSimulator {
 	ResourceManager rMgr;
+	SicLoader sLd;
+	InstTable instTable;
 
-	public SicSimulator(ResourceManager resourceManager) {
+	public SicSimulator(ResourceManager resourceManager, SicLoader sicloader) {
 		// 필요하다면 초기화 과정 추가
 		this.rMgr = resourceManager;
+		this.sLd = sicloader;
+		this.instTable = new InstTable("inst.data");
+	
 	}
 
 	/**
@@ -29,6 +40,7 @@ public class SicSimulator {
 	 */
 	public void load(File program) {
 		/* 메모리 초기화, 레지스터 초기화 등*/
+		sLd.load(program);
 	}
 
 	/**

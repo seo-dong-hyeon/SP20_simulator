@@ -13,7 +13,7 @@ import SP20_simulator.Gui;
 public class VisualSimulator {
 	ResourceManager resourceManager = new ResourceManager();
 	SicLoader sicLoader = new SicLoader(resourceManager);
-	SicSimulator sicSimulator = new SicSimulator(resourceManager);
+	SicSimulator sicSimulator = new SicSimulator(resourceManager, sicLoader);
 	Gui gui;
 	
 	/**
@@ -43,7 +43,7 @@ public class VisualSimulator {
 	 * 화면을 최신값으로 갱신하는 역할을 수행한다.
 	 */
 	public void update(){
-		
+		this.gui.eventAction();
 	};
 	
 
