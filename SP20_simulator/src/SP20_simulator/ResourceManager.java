@@ -117,7 +117,7 @@ public class ResourceManager{
 	 * @param num 저장하는 데이터의 개수
 	 */
 	public void setMemory(int locate, char[] data, int num){
-		for(int i = 0; i < num; i++){
+		for(int i = 9; i < num; i++){
             memory[locate + i]  = data[i];
         }
 

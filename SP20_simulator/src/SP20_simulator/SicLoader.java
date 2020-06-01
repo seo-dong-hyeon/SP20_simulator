@@ -18,6 +18,7 @@ public class SicLoader {
 	ResourceManager rMgr;
 	int currentSection = 0;
 	int startADDR = 0;
+	int memoryIdx = 0;
 	
 	public SicLoader(ResourceManager resourceManager) {
 		// 필요하다면 초기화
@@ -58,6 +59,13 @@ public class SicLoader {
         }catch(IOException e){
             System.out.println(e);
         }
+		
+		for(int i=0; i<memoryIdx +10; i++) {
+			System.out.print(rMgr.memory[i]);
+			if(i % 10 == 0) {
+				System.out.println();
+			}
+		}
 
 	};
 	
@@ -69,26 +77,17 @@ public class SicLoader {
 			//필요한 변수와 함수는 자유롭게 선언 가능		
 			rMgr.setProgname(line.substring(1, 7));
 			rMgr.setProgLength(line.substring(13,19));
-			rMgr.setStartADDR(startADDR);
+			rMgr.setStartADDR(memoryIdx);
 
 			// SYMTAB 등록
 			rMgr.symtabList.get(currentSection).
 			putSymbol(line.substring(1,7),Integer.parseInt(rMgr.getStartADDR(currentSection), 16));
-			
-			
-			//System.out.println(line.substring(1, 7) +" "+line.substring(13,19));
-			//System.out.println(line.substring(1,7) +" "+Integer.parseInt(rMgr.getStartADDR(currentSection), 16));
 			break;
 			
 		case 'T' :
-			int startLocctr = rMgr.symtabList.get(currentSection).locationList.get(0);      
-            int targetAddr = startLocctr + Integer.parseInt(line.substring(1,7),16);        
-            rMgr.setMemory(targetAddr*2, line.substring(9).toCharArray(),Integer.parseInt(line.substring(7,9), 16)*2);
-            
-            System.out.println("target :" +targetAddr*2);
-            System.out.println("line : "+line.substring(9).toCharArray());
-            System.out.println("??:" +Integer.parseInt(line.substring(7,9), 16)*2);
-            
+			
+            rMgr.setMemory(memoryIdx, line.toCharArray(), line.length());
+            memoryIdx += line.length() - 9;              
             break;
 
 			
