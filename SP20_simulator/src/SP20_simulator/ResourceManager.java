@@ -43,12 +43,18 @@ public class ResourceManager{
 	ArrayList<String> progname;
 	ArrayList<String> startADDR;
 	ArrayList<String> progLength;
+	ArrayList<String> objectCodeList;
+	ArrayList<String> log;
+	
+	int currentSection = 0;
+	int operatorCnt = 0;
+	
 	
 	/**
 	 * 메모리, 레지스터등 가상 리소스들을 초기화한다.
 	 */
 	public void initializeResource(){
-		Arrays.fill(memory, '\0');
+		Arrays.fill(memory, 'x');
         Arrays.fill(register, 0);
         register_F = 0.0;
         symtabList = new ArrayList<SymbolTable>();
@@ -59,6 +65,8 @@ public class ResourceManager{
         progname = new ArrayList<String>();
         startADDR = new ArrayList<String>();
         progLength = new ArrayList<String>();
+        objectCodeList = new ArrayList<String>();
+        log = new ArrayList<String>();
 	}
 	
 	/**
@@ -106,8 +114,7 @@ public class ResourceManager{
 	 * @return 가져오는 데이터
 	 */
 	public char[] getMemory(int location, int num){
-		return null;
-		
+		return Arrays.copyOfRange(memory, location, location+num);
 	}
 
 	/**

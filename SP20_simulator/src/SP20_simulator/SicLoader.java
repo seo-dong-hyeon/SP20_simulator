@@ -60,13 +60,12 @@ public class SicLoader {
             System.out.println(e);
         }
 		
-		for(int i=0; i<memoryIdx +10; i++) {
+		/*for(int i=0; i<memoryIdx +10; i++) {
 			System.out.print(rMgr.memory[i]);
 			if(i % 10 == 0) {
 				System.out.println();
 			}
-		}
-
+		}*/
 	};
 	
 	public void analyze(String line) {
@@ -84,13 +83,11 @@ public class SicLoader {
 			putSymbol(line.substring(1,7),Integer.parseInt(rMgr.getStartADDR(currentSection), 16));
 			break;
 			
-		case 'T' :
-			
+		case 'T' :	
             rMgr.setMemory(memoryIdx, line.toCharArray(), line.length());
             memoryIdx += line.length() - 9;              
             break;
 
-			
 		case 'M' :
 		}
 

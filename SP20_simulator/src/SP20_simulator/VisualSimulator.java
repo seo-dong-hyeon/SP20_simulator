@@ -22,14 +22,14 @@ public class VisualSimulator {
 	public void load(File program){
 		//...
 		sicLoader.load(program);
-		//sicSimulator.load(program);
+		sicSimulator.load(program);
 	};
 
 	/**
 	 * 하나의 명령어만 수행할 것을 SicSimulator에 요청한다.
 	 */
 	public void oneStep(){
-		
+		sicSimulator.oneStep();
 	};
 
 	/**
